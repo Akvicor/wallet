@@ -12,6 +12,7 @@
 - 创建债务, 与钱包功能一致
 - 创建订阅, 自定义付费周期, 自动计算下次付费时间, 下次付费前通过短信或邮件提醒, 自动计算每天/月/年的订阅开支
 - 开支图表, 日历形式展示每天/月的开支, 饼状图展示区间内的开支占比, 折线图展示区间内的开支占比
+- 通过短信或邮件发送通知
 
 教程及介绍[https://blog.akvicor.com/posts/project/wallet/](https://blog.akvicor.com/posts/project/wallet/)
 
