@@ -1,0 +1,9 @@
+services:
+  wallet:
+    image: akvicor/wallet:v0.2.20
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./data:/data"
+
