@@ -10,10 +10,13 @@ RUN cd backend && make build
 # 最小化镜像
 FROM debian:12.8-slim
 WORKDIR /app
+
 COPY --from=builder /app/backend/bin/wallet ./wallet
 COPY --from=builder /app/prod.sh ./prod.sh
-RUN chmod +x ./prod.sh
-RUN mkdir /data
+
+RUN ln -sf /usr/share/zoneinfo/Etc/GMT-8 /etc/localtime && \
+    mkdir /data && \
+    chmod +x ./prod.sh
 
 # healthy check
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*

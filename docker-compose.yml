@@ -1,11 +1,12 @@
 services:
   wallet:
-    image: akvicor/wallet:v0.2.22
+    image: akvicor/wallet:v0.3.0
     restart: always
     ports:
       - "3000:3000"
     volumes:
       - "./data:/data"
+      - "/etc/localtime:/etc/localtime:ro"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/api/sys/info/health"]
       interval: 10s
