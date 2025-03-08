@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/labstack/echo/v4"
+	"wallet/cmd/app/server/app/dro"
 	"wallet/cmd/app/server/common/resp"
 	"wallet/cmd/app/server/global/sys"
 	"wallet/cmd/config"
@@ -37,4 +38,15 @@ func (a *sysApi) InfoCache(c echo.Context) (err error) {
 		"login_failed_manager_count": len(loginFailedManager),
 		"login_failed_manager":       loginFailedManager,
 	})
+}
+
+func (a *sysApi) Health(c echo.Context) error {
+	health := &dro.SysHealth{
+		Status: "healthy",
+	}
+	if health.Status == "healthy" {
+		return resp.Healthy(c, health)
+	} else {
+		return resp.Unhealthy(c, health)
+	}
 }

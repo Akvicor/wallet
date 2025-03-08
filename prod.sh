@@ -8,7 +8,6 @@ fi
 
 if [ -f "/data/wallet.db" ]; then
   echo "wallet.db found"
-else
   ./wallet migrate -c /data/config.toml
 fi
 

@@ -55,6 +55,7 @@ func setupRoutes(e *echo.Echo) {
 		apiGroupPublic.GET("/sys/info/version/full", api.Sys.VersionFull, mw.NewIPLimiter(3, 3))
 		apiGroupPublic.GET("/sys/info/branding", api.Sys.Branding, mw.NewIPLimiter(3, 3))
 		apiGroupAdmin.GET("/sys/info/cache", api.Sys.InfoCache, mw.NewIPLimiter(3, 3))
+		apiGroupPublic.GET("/sys/info/health", api.Sys.Health, mw.NewIPLimiter(3, 3))
 	}
 
 	// 类型数据

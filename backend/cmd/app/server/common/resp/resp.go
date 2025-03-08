@@ -5,6 +5,14 @@ import (
 	"net/http"
 )
 
+func Healthy(c echo.Context, data any) error {
+	return c.JSON(http.StatusOK, data)
+}
+
+func Unhealthy(c echo.Context, data any) error {
+	return c.JSON(http.StatusServiceUnavailable, data)
+}
+
 func Fail(c echo.Context, code Code) error {
 	return c.JSON(http.StatusOK, NewModel(code, nil, "", nil))
 }
