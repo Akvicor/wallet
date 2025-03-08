@@ -15,6 +15,9 @@ COPY --from=builder /app/prod.sh ./prod.sh
 RUN chmod +x ./prod.sh
 RUN mkdir /data
 
+# healthy check
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 EXPOSE 3000
 CMD ["./prod.sh"]
 
