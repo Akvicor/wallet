@@ -35,7 +35,7 @@ func (a *userTransactionApi) Create(c echo.Context) (err error) {
 	}
 	switch input.TransactionType {
 	case transaction.TypeIncome:
-		_, err = service.UserTransaction.CreateIncome(transaction.TypeIncome, self.ID, input.ToPartitionID, input.CategoryID, input.Description, input.ToValue, input.Created)
+		_, err = service.UserTransaction.CreateIncome(transaction.TypeIncome, self.ID, input.ToPartitionID, input.CurrencyID, input.CategoryID, input.Description, input.ToValue, input.Created)
 	case transaction.TypeExpense:
 		_, err = service.UserTransaction.CreateExpense(transaction.TypeExpense, self.ID, input.FromPartitionID, input.CurrencyID, input.CategoryID, input.Description, input.ToValue, input.Created)
 	case transaction.TypeTransfer:

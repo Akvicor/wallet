@@ -660,7 +660,7 @@ const Transaction = () => {
           }
           {
             inputTransactionDataAction === 'create' &&
-            (selectedTransactionType === TransactionTypeExpense || selectedTransactionType === TransactionTypeAutoTransfer) &&
+            (selectedTransactionType === TransactionTypeIncome || selectedTransactionType === TransactionTypeExpense || selectedTransactionType === TransactionTypeAutoTransfer) &&
             <Form.Item
               label="货币"
               name="currency_id"

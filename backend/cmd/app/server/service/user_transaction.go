@@ -45,13 +45,18 @@ func (u *userTransactionService) FindByUID(alive bool, preloader *model.Preloade
 }
 
 // CreateIncome 创建收入交易
-func (u *userTransactionService) CreateIncome(transactionType transaction.Type, uid, toPartitionID, categoryID int64, description string, value decimal.Decimal, created int64) (*model.UserTransaction, error) {
-	transactions := model.NewUserTransaction(uid, 0, 0, toPartitionID, 0, categoryID, transactionType, description, value, value, decimal.NewFromInt(0), created)
+func (u *userTransactionService) CreateIncome(transactionType transaction.Type, uid, toPartitionID, currencyID, categoryID int64, description string, value decimal.Decimal, created int64) (*model.UserTransaction, error) {
+	transactions := model.NewUserTransaction(uid, 0, 0, toPartitionID, 0, categoryID, transactionType, description, value, decimal.NewFromInt(0), decimal.NewFromInt(0), created)
 	err := u.transaction(context.Background(), func(ctx context.Context) error {
 		// 判断用户是否存在且未被停用
 		exist, e := repository.User.ExistById(ctx, true, uid)
 		if !exist || errors.Is(e, gorm.ErrRecordNotFound) {
 			return errors.New("用户已被停用")
+		}
+		// 判断货币是否存在
+		exist, e = repository.Currency.ExistById(ctx, true, []int64{currencyID})
+		if !exist || errors.Is(e, gorm.ErrRecordNotFound) {
+			return errors.New("货币已被停用")
 		}
 		// 判断目标钱包和划分
 		var toPartition *model.UserWalletPartition
@@ -71,8 +76,23 @@ func (u *userTransactionService) CreateIncome(transactionType transaction.Type, 
 		if toPartition.Card.Currency == nil {
 			return errors.New("cannot find wallet for partition card currency")
 		}
+		if currencyID == 0 {
+			currencyID = toPartition.CurrencyID
+		}
+		rate := decimal.NewFromInt(1)
+		if currencyID != toPartition.CurrencyID {
+			// 查询汇率
+			var exchange *model.UserExchangeRate
+			exchange, e = repository.UserExchangeRate.FindByUID(ctx, true, nil, uid, currencyID, toPartition.CurrencyID)
+			if e != nil {
+				return fmt.Errorf("find exchange rate failed: %v", e)
+			}
+			rate = exchange.Rate
+			transactions.FromCurrencyID = currencyID
+		}
 		// 补充交易信息
 		transactions.ToCurrencyID = toPartition.CurrencyID
+		transactions.ToValue = transactions.FromValue.Mul(rate)
 		// 判断交易分类是否属于用户
 		e = repository.UserTransactionCategory.DetectValidByUIDType(ctx, uid, transactions.Type, []int64{categoryID})
 		if e != nil {
@@ -144,6 +164,9 @@ func (u *userTransactionService) CreateExpense(transactionType transaction.Type,
 		}
 		if fromPartition.Card.Currency == nil {
 			return errors.New("cannot find wallet for partition card currency")
+		}
+		if currencyID == 0 {
+			currencyID = fromPartition.CurrencyID
 		}
 		rate := decimal.NewFromInt(1)
 		if currencyID != fromPartition.CurrencyID {
