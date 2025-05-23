@@ -16,6 +16,11 @@
 
 教程及介绍[https://blog.akvicor.com/posts/project/wallet/](https://blog.akvicor.com/posts/project/wallet/)
 
+# 默认用户名及密码
+
+- 用户名: `admin`
+- 密码: `password`
+
 ## 钱包逻辑
 
 ### 钱包和交易
